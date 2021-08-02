@@ -1,3 +1,23 @@
+# Use an ARM template to deploy a Web app to Azure
+
+Get started with Azure Resource Manager templates (ARM templates) by deploying a Web app with SQL database. ARM templates give you a way to save your configuration in code. Using an ARM template is an example of infrastructure as code and a good DevOps practice.
+
+An ARM template is a JavaScript Object Notation (JSON) file that defines the infrastructure and configuration for your project. The template uses declarative syntax. In declarative syntax, you describe your intended deployment without writing the sequence of programming commands to create the deployment.
+
+Prerequisites
+Before you begin, you need:
+
+An Azure account with an active subscription. [Create an account for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F).
+An active Azure DevOps organization. [Sign up for Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-sign-up?view=azure-devops).
+Get the code
+For this repository on GitHub:
+
+
+```
+https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/
+
+```
+
 # Create your pipeline and deploy your template
 
 1. Sign in to your Azure DevOps organization and navigate to your project. Create a project if you do not already have one.
@@ -32,13 +52,13 @@ vmImage: 'ubuntu-latest'
    - Use the + sign to add three variables. When you create `administratorLoginPassword`, select Keep this value secret.
    - Click Save when you're done.
 
-     | Variable                        | Value             | Secret?    |
-     | -----------------------------   | ------------------| -------    |
-     | skuName                         | S1                | No         |
-     | skuCapacity                     | 1                 | No         |
-     | location                        | East US           | No         |
-     | sqlAdministratorLogin           | admin             | No         |
-     | sqlAdministratorLoginPassword   | Fqdn:5362!        | Yes        |
+     | Variable                      | Value      | Secret? |
+     | ----------------------------- | ---------- | ------- |
+     | skuName                       | S1         | No      |
+     | skuCapacity                   | 1          | No      |
+     | location                      | East US    | No      |
+     | sqlAdministratorLogin         | admin      | No      |
+     | sqlAdministratorLoginPassword | Fqdn:5362! | Yes     |
 
 8. Map the secret variable `$(adminPass)` so that it is available in your Azure Resource Group Deployment task. At the top of your YAML file, map `$(adminPass)` to `$(ARM_PASS)`.
 
@@ -93,7 +113,7 @@ The task references both the artifact you built with the Copy Files task and you
 
 
 variables:
-  ARM_PASS: $(adminPass)
+  ARM_PASS: $(administratorLoginPassword)
 
 trigger:
 - none
@@ -119,7 +139,7 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: '$(Build.ArtifactStagingDirectory)/azuredeploy.json'
     csmParametersFile: '$(Build.ArtifactStagingDirectory)/azuredeploy.parameters.json'
-    overrideParameters: '-siteName $(siteName) -administratorLogin $(adminUser) -administratorLoginPassword $(ARM_PASS)'
+    overrideParameters: '-skuName $(skuName) -administratorLogin $(administratorLogin) -administratorLoginPassword $(ARM_PASS)'
     deploymentMode: 'Incremental'
 Click Save and run to deploy your template. The pipeline job will be launched and after few minutes, depending on your agent, the job status should indicate Success.
 ```
