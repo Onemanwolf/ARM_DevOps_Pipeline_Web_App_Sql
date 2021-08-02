@@ -115,7 +115,7 @@ Before you begin, you need:
 - An active Azure DevOps organization. [Sign up for Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-sign-up?view=azure-devops).
   Get the code
 
-- Create a resource connection in Azure DevOps Project.
+- [Create a resource connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml) in Azure DevOps Project.
 
 > Note: Nice to have tool `Azure CLI` installed on your local dev environment [Azure CLI download and install](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).
 
