@@ -4,6 +4,94 @@ Get started with Azure Resource Manager templates (ARM templates) by deploying a
 
 An ARM template is a JavaScript Object Notation (JSON) file that defines the infrastructure and configuration for your project. The template uses declarative syntax. In declarative syntax, you describe your intended deployment without writing the sequence of programming commands to create the deployment.
 
+## Basic Template Structure:
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {},
+  "functions": [],
+  "variables": {},
+  "resources": [],
+  "outputs": {}
+}
+```
+
+## SQL Database Example ARM Template:
+
+```json
+{
+  "$schema": "https://schema.management.  azure.com/schemas/2019-04-01/ deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serverName": {
+      "type": "string",
+      "defaultValue": "[uniqueString  ('sql', resourceGroup().id)]",
+      "metadata": {
+        "description": "The name of the   SQL logical server."
+      }
+    },
+    "sqlDBName": {
+      "type": "string",
+      "defaultValue": "SampleDB",
+      "metadata": {
+        "description": "The name of the   SQL Database."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().  location]",
+      "metadata": {
+        "description": "Location for all  resources."
+      }
+    },
+    "administratorLogin": {
+      "type": "string",
+      "metadata": {
+        "description": "The administrator   username of the SQL logical   server."
+      }
+    },
+    "administratorLoginPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The administrator   password of the SQL logical   server."
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2020-02-02-preview",
+      "name": "[parameters('serverName')] ",
+      "location": "[parameters('location')  ]",
+      "properties": {
+        "administratorLogin": "[parameters  ('administratorLogin')]",
+        "administratorLoginPassword": " [parameters  ('administratorLoginPassword')]"
+      },
+      "resources": [
+        {
+          "type": "databases",
+          "apiVersion": "2020-08-01-preview",
+          "name": "[parameters  ('sqlDBName')]",
+          "location": "[parameters  ('location')]",
+          "sku": {
+            "name": "Standard",
+            "tier": "Standard"
+          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Sql/  servers', concat(parameters ('serverName')))]"
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Azure Resource Manager Layer
+
 ![armmanagementlayer](./Images/ARMmanagementlayer.png)
 
 DevOps Use the REST APIs to create resources lets take a quick look at the REST Endpoints for [Create or Update a Group Scope](https://docs.microsoft.com/en-us/rest/api/resources/deployments/create-or-update-at-management-group-scope).
@@ -188,10 +276,8 @@ A good resource for learning more and getting some good practice in is Microsoft
 
 ### Deploy and manage resources in Azure by using JSON ARM templates
 
-
 [Learn to Deploy ARM Templates learning path](https://docs.microsoft.com/en-us/learn/paths/deploy-manage-resource-manager-templates/)
 
 ## Arm Template Documentation
 
 [ARM Template documentation](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/)
-
