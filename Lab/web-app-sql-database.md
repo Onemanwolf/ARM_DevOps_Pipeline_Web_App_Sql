@@ -93,7 +93,7 @@ vmImage: 'ubuntu-latest'
      - task: CopyFiles@2
        inputs:
        SourceFolder: 'quickstarts/microsoft.web/web-app-sql-database'
-       Contents: '\*\*'
+       Contents: '**'
        TargetFolder: '$(Build.ArtifactStagingDirectory)'
    ```
 
@@ -143,7 +143,7 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: '$(Build.ArtifactStagingDirectory)/azuredeploy.json'
     csmParametersFile: '$(Build.ArtifactStagingDirectory)/azuredeploy.parameters.json'
-    overrideParameters: '-skuName $(skuName) -administratorLogin $(administratorLogin) -administratorLoginPassword $(ARM_PASS)'
+    overrideParameters: '-skuName $(skuName) skuCapacity $(skuCapacity) -sqlAdministratorLogin $(administratorLogin) -sqlAdministratorLoginPassword $(ARM_PASS)'
     deploymentMode: 'Incremental'
 Click Save and run to deploy your template. The pipeline job will be launched and after few minutes, depending on your agent, the job status should indicate Success.
 ```
