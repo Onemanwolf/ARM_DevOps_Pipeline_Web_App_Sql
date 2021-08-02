@@ -4,23 +4,45 @@ Get started with Azure Resource Manager templates (ARM templates) by deploying a
 
 An ARM template is a JavaScript Object Notation (JSON) file that defines the infrastructure and configuration for your project. The template uses declarative syntax. In declarative syntax, you describe your intended deployment without writing the sequence of programming commands to create the deployment.
 
+![armmanagementlayer](./Images/ARMmanagementlayer.png)
+
+DevOps Use the REST APIs to create resources lets take a quick look at the REST Endpoints for [Create or Update a Group Scope](https://docs.microsoft.com/en-us/rest/api/resources/deployments/create-or-update-at-management-group-scope).
+
+## Terminology
+
+If you're new to Azure Resource Manager, there are some terms you might not be familiar with.
+
+- **resource** - A manageable item that is available through Azure. Virtual machines, storage accounts, web apps, databases, and virtual networks are examples of resources. Resource groups, subscriptions, management groups, and tags are also examples of resources.
+- **resource group** - A container that holds related resources for an Azure solution. The resource group includes those resources that you want to manage as a group. You decide which resources belong in a resource group based on what makes the most sense for your organization. [See Resource groups](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/overview#resource-groups).
+- **resource provider** - A service that supplies Azure resources. For example, a common resource provider is Microsoft.Compute, which supplies the virtual machine resource. Microsoft.Storage is another common resource provider. See [Resource providers and types](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-providers-and-types).
+- **Resource Manager template** - A JavaScript Object Notation (JSON) file that defines one or more resources to deploy to a resource group, subscription, management group, or tenant. The template can be used to deploy the resources consistently and repeatedly. See [Template deployment overview](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview).
+- **declarative syntax** - Syntax that lets you state "Here is what I intend to create" without having to write the sequence of programming commands to create it. The Resource Manager template is an example of declarative syntax. In the file, you define the properties for the infrastructure to deploy to Azure. See [Template deployment overview](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/overview).
+
+ARM Templates docs this is good place to understand templates.
+
 Prerequisites
 Before you begin, you need:
 
-An Azure account with an active subscription. [Create an account for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F).
-An active Azure DevOps organization. [Sign up for Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-sign-up?view=azure-devops).
-Get the code
+- An Azure account with an active subscription. [Create an account for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F).
+- An active Azure DevOps organization. [Sign up for Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-sign-up?view=azure-devops).
+  Get the code
+
+- Create a resource connection in Azure DevOps Project.
+
+> Note: Nice to have tool `Azure CLI` installed on your local dev environment [Azure CLI download and install](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).
+
+- Get your subscription Id use `az account show` or navigate to the Subscriptions in the Azure Portal.
 
 ## For this repository on GitHub:
 
 From Git Hub fork the below git hub repository.
 
->If you need guidance on forking a repo [click here](https://docs.github.com/en/get-started/quickstart/fork-a-repo).
+> If you need guidance on forking a repo [click here](https://docs.github.com/en/get-started/quickstart/fork-a-repo).
 
-```
-https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/
+    ```
+        https://github.com/Azure/   azure-quickstart-templates  /tree/master/quickstarts/
 
-```
+    ```
 
 # Create your pipeline and deploy your template
 
@@ -42,13 +64,13 @@ https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/
 
 6. Replace the content of your pipeline with this code:
 
-```yml
-trigger:
-  - none
+   ```yml
+   trigger:
+     - none
 
-pool:
-vmImage: 'ubuntu-latest'
-```
+   pool:
+   vmImage: 'ubuntu-latest'
+   ```
 
 7. Create three variables: `skuName`, `skuCapacity`, `location` and `sqlAdministratorLogin` . `administratorLoginPassword` needs to be a secret variable.
 
@@ -99,53 +121,77 @@ vmImage: 'ubuntu-latest'
 
 10. Add and configure the Azure Resource Group Deployment task.
 
-The task references both the artifact you built with the Copy Files task and your pipeline variables. Set these values when configuring your task.
+    The task references both the artifact you built with the Copy Files task and your pipeline variables. Set these values when configuring your task.
 
-- Deployment scope (deploymentScope): Set the deployment scope to Resource Group. You can target your deployment to a management group, an Azure subscription, or a resource group.
-- Azure Resource Manager connection (azureResourceManagerConnection): Select your Azure Resource Manager service connection. To configure new service connection, select the Azure subscription from the list and click Authorize. See Connect to Microsoft Azure for more details
-- Subscription (subscriptionId): Select the subscription where the deployment should go.
-- Action (action): Set to Create or update resource group to create a new resource group or to update an existing one.
+- **Deployment scope (deploymentScope)**: Set the deployment scope to Resource Group. You can target your deployment to a management group, an Azure subscription, or a resource group.
+- **Azure Resource Manager connection (azureResourceManagerConnection)**: Select your Azure Resource Manager service connection. To configure new service connection, select the Azure subscription from the list and click Authorize. See Connect to Microsoft Azure for more details
+- **Subscription (subscriptionId)**: Select the subscription where the deployment should go.
+- **Action (action)**: Set to Create or update resource group to create a new resource group or to update an existing one.
   Resource group: Set toARMPipelinesLAMP-rg to name your new resource group. If this is an existing resource group, it will be updated.
-- Location(location): Location for deploying the resource group. Set to your closest location (for example, West US). If the resource group already exists in your subscription, this value will be ignored.
-- Template location (templateLocation): Set to Linked artifact. This is location of your template and the parameters files.
-- Template (cmsFile): Set to $(Build.ArtifactStagingDirectory)/azuredeploy.json. This is the path to the ARM template.
-- Template parameters (cmsParametersFile): Set to $(Build.ArtifactStagingDirectory)/azuredeploy.parameters.json. This is the path to the parameters file for your ARM template.
-- Override template parameters (overrideParameters): Set to -siteName $(skuName) -administratorLogin $(adminUser) -administratorLoginPassword $(administratorLoginPassword) to use the variables you created earlier. These values will replace the parameters set in your template parameters file.
-- Deployment mode (deploymentMode): The way resources should be deployed. Set to **Incremental**. **Incremental** keeps resources that are not in the ARM template and is faster than **Complete**. Validate mode lets you find problems with the template before deploying.
+- **Location(location)**: Location for deploying the resource group. Set to your closest location (for example, West US). If the resource group already exists in your subscription, this value will be ignored.
+- **Template location (templateLocation)**: Set to Linked artifact. This is location of your template and the parameters files.
+- **Template (cmsFile)**: Set to $(Build.ArtifactStagingDirectory)/azuredeploy.json. This is the path to the ARM template.
+- **Template parameters (cmsParametersFile)**: Set to $(Build.ArtifactStagingDirectory)/azuredeploy.parameters.json. This is the path to the parameters file for your ARM template.
+- **Override** template parameters (overrideParameters): Set to -siteName $(skuName) -administratorLogin $(adminUser) -administratorLoginPassword $(administratorLoginPassword) to use the variables you created earlier. These values will replace the parameters set in your template parameters file.
+- **Deployment mode (deploymentMode)**: The way resources should be deployed. Set to **Incremental**. **Incremental** keeps resources that are not in the ARM template and is faster than **Complete**. Validate mode lets you find problems with the template before deploying.
 
-```yml
+  ```yml
+  variables:
+    ARM_PASS: $(adminPass)
 
+  trigger:
+    - master
 
-variables:
-  ARM_PASS: $(administratorLoginPassword)
+  pool:
+    vmImage: ubuntu-latest
 
-trigger:
-- none
+  steps:
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: 'quickstarts/microsoft.web/web-app-sql-database'
+        Contents: '**'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
-pool:
-  vmImage: 'ubuntu-latest'
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: '<your-resource-manager-connection>'
+        subscriptionId: '<your-subscription-Id>'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: 'ARMPipelinesLAMP-rg'
+        location: '<your-closest-location>'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Build.ArtifactStagingDirectory)/azuredeploy.json'
+        csmParametersFile: '$(Build.ArtifactStagingDirectory)/azuredeploy.parameters.json'
+        overrideParameters: '-skuName $(skuName) -skuCapacity $(skuCapacity) -sqlAdministratorLogin  $(administratorLogin) -sqlAdministratorLoginPassword  $(ARM_PASS)'
+        deploymentMode: 'Incremental'
+  ```
 
-steps:
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: 'quickstarts/microsoft.web/web-app-sql-database'
-    Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-
-- task: AzureResourceManagerTemplateDeployment@3
-  inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: '<your-resource-manager-connection>'
-    subscriptionId: '<your-subscription-id>'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: 'ARMPipelinesLAMP-rg'
-    location: '<your-closest-location>'
-    templateLocation: 'Linked artifact'
-    csmFile: '$(Build.ArtifactStagingDirectory)/azuredeploy.json'
-    csmParametersFile: '$(Build.ArtifactStagingDirectory)/azuredeploy.parameters.json'
-    overrideParameters: '-skuName $(skuName) skuCapacity $(skuCapacity) -sqlAdministratorLogin $(administratorLogin) -sqlAdministratorLoginPassword $(ARM_PASS)'
-    deploymentMode: 'Incremental'
-Click Save and run to deploy your template. The pipeline job will be launched and after few minutes, depending on your agent, the job status should indicate Success.
-```
+11. Click Save and run to deploy your template. The pipeline job will be launched and after few minutes, depending on your agent, the job status should indicate Success.
 
 Ensure all indention is correct or file will fail to parse.
+
+## Clean Up
+
+You can now clean up the resource you created in the lab by running the `az group delete` command.
+
+```CLI
+  az group delete --resource-group ARMPipelinesLAMP-rg
+
+```
+
+# More Resources
+
+## Learn
+
+A good resource for learning more and getting some good practice in is Microsoft Learn.
+
+### Deploy and manage resources in Azure by using JSON ARM templates
+
+
+[Learn to Deploy ARM Templates learning path](https://docs.microsoft.com/en-us/learn/paths/deploy-manage-resource-manager-templates/)
+
+## Arm Template Documentation
+
+[ARM Template documentation](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/)
+
