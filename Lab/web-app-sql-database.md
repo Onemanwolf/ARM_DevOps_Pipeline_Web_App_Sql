@@ -10,8 +10,12 @@ Before you begin, you need:
 An Azure account with an active subscription. [Create an account for free](https://azure.microsoft.com/free/?WT.mc_id=A261C142F).
 An active Azure DevOps organization. [Sign up for Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/pipelines-sign-up?view=azure-devops).
 Get the code
-For this repository on GitHub:
 
+## For this repository on GitHub:
+
+From Git Hub fork the below git hub repository.
+
+>If you need guidance on forking a repo [click here](https://docs.github.com/en/get-started/quickstart/fork-a-repo).
 
 ```
 https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/
@@ -73,7 +77,7 @@ vmImage: 'ubuntu-latest'
      vmImage: 'ubuntu-latest'
    ```
 
-9. Add the Copy Files task to the YAML file. You will use the 101-webapp-linux-managed-mysql project. For more information, see Build a Web app on Linux with Azure database for MySQL repo for more details.
+9. Add the Copy Files task to the YAML file. You will use the web-app-sql-database project. For more information, see [Provision a web app with a SQL Database](https://github.com/Azure/azure-quickstart-templates/tree/master/quickstarts/microsoft.web/web-app-sql-database) repo for more details.
 
    ```yml
    variables:
@@ -88,7 +92,7 @@ vmImage: 'ubuntu-latest'
    steps:
      - task: CopyFiles@2
        inputs:
-       SourceFolder: 'quickstarts/microsoft.web/webapp-linux-managed-mysql/'
+       SourceFolder: 'quickstarts/microsoft.web/web-app-sql-database/'
        Contents: '\*\*'
        TargetFolder: '$(Build.ArtifactStagingDirectory)'
    ```
@@ -106,8 +110,8 @@ The task references both the artifact you built with the Copy Files task and you
 - Template location (templateLocation): Set to Linked artifact. This is location of your template and the parameters files.
 - Template (cmsFile): Set to $(Build.ArtifactStagingDirectory)/azuredeploy.json. This is the path to the ARM template.
 - Template parameters (cmsParametersFile): Set to $(Build.ArtifactStagingDirectory)/azuredeploy.parameters.json. This is the path to the parameters file for your ARM template.
-- Override template parameters (overrideParameters): Set to -siteName $(siteName) -administratorLogin $(adminUser) -administratorLoginPassword $(ARM_PASS) to use the variables you created earlier. These values will replace the parameters set in your template parameters file.
-- Deployment mode (deploymentMode): The way resources should be deployed. Set to Incremental. Incremental keeps resources that are not in the ARM template and is faster than Complete. Validate mode lets you find problems with the template before deploying.
+- Override template parameters (overrideParameters): Set to -siteName $(skuName) -administratorLogin $(adminUser) -administratorLoginPassword $(administratorLoginPassword) to use the variables you created earlier. These values will replace the parameters set in your template parameters file.
+- Deployment mode (deploymentMode): The way resources should be deployed. Set to **Incremental**. **Incremental** keeps resources that are not in the ARM template and is faster than **Complete**. Validate mode lets you find problems with the template before deploying.
 
 ```yml
 
