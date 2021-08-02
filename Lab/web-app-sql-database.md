@@ -92,7 +92,7 @@ vmImage: 'ubuntu-latest'
    steps:
      - task: CopyFiles@2
        inputs:
-       SourceFolder: 'quickstarts/microsoft.web/web-app-sql-database/'
+       SourceFolder: 'quickstarts/microsoft.web/web-app-sql-database'
        Contents: '\*\*'
        TargetFolder: '$(Build.ArtifactStagingDirectory)'
    ```
@@ -128,7 +128,7 @@ pool:
 steps:
 - task: CopyFiles@2
   inputs:
-    SourceFolder: 'quickstarts/microsoft.web/web-app-sql-database/'
+    SourceFolder: 'quickstarts/microsoft.web/web-app-sql-database'
     Contents: '**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
@@ -147,3 +147,5 @@ steps:
     deploymentMode: 'Incremental'
 Click Save and run to deploy your template. The pipeline job will be launched and after few minutes, depending on your agent, the job status should indicate Success.
 ```
+
+Ensure all indention is correct or file will fail to parse.
